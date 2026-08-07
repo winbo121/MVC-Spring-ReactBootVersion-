@@ -1,5 +1,7 @@
 package com.zerock.mallapi.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.zerock.mallapi.domain.QTodo;
 import com.zerock.mallapi.domain.Todo;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -19,6 +22,9 @@ public class TodoRepositoryTests {
 
     @Autowired
     public TodoRepository todoRepository;
+
+    @Autowired
+    private JPAQueryFactory jpaQueryFactory;
 
     @Test
     public void testInsert(){
@@ -82,4 +88,18 @@ public class TodoRepositoryTests {
                 );
 
     }
+
+    //jpaQueryFactory 이용해서 title로 '11' 글자 데이터 검색
+    @Test
+    public void testPagingQureryds(){
+
+        Pageable pageable = PageRequest.of(0,10,Sort.by("tno").descending());
+
+        QTodo qTodo = QTodo.todo;
+
+        List<Todo> list =jpaQueryFactory.selectFrom(qTodo).where(qTodo.title.contains("11")).fetch();
+
+        log.info("list ->"+list);
+    }
+
 }

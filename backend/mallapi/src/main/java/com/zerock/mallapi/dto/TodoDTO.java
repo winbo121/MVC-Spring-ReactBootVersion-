@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TodoDTO {
 
+    private Long tno;
     private String title;
     private String writer;
 

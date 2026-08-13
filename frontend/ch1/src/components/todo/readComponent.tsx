@@ -8,9 +8,9 @@ import type { UseCustomMoveReturn } from "../../types/global";
 
 const ReadComponent = ({tno} : {tno:number}) => {
 
-    const initState : Todo = {tno:0, title:'', writer:'', dueDate: null,  complete: false }
+    const initState : Todo = {tno:0, title:'', writer:'', dueDate: null, complete: false }
 
-    const {moveToList}:UseCustomMoveReturn = useCustomMove()
+    const {moveToList,moveToModify}:UseCustomMoveReturn = useCustomMove()
     
     const[todo , setTodo] = useState<Todo>(initState)
 
@@ -18,7 +18,6 @@ const ReadComponent = ({tno} : {tno:number}) => {
         getOne(tno).then(data => {
             console.log(data)
             setTodo(data)
-            
         })
     },[tno])
 
@@ -30,7 +29,7 @@ const ReadComponent = ({tno} : {tno:number}) => {
             {value} 
           </div>
         </div>
-      </div>  
+      </div> 
 
 
     return (
@@ -47,8 +46,15 @@ const ReadComponent = ({tno} : {tno:number}) => {
         >
         List
         </button> 
-      </div>
 
+        <button type="button" 
+        className="rounded p-4 m-2 text-xl w-32 text-white bg-red-500"
+        onClick={() => moveToModify(todo.tno)} 
+        > 
+        Modify 
+        </button> 
+
+      </div>
     </div>
 
     );

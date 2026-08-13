@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { createSearchParams , useNavigate , useSearchParams } from "react-router";
 import type { PageParam, UseCustomMoveReturn } from "../global";
 
@@ -19,14 +18,7 @@ function useCustomMove(): UseCustomMoveReturn  {
         size: String(size)
     }).toString();
 
-    // 렌더 본문이 아니라, page/size가 바뀔 때만 로그
-    useEffect(() => {
-        console.log("tttttttt" + queryDefault);
-    }, [queryDefault]);
-
-    const moveToList = (pageParam?: PageParam) =>{
-
-        console.log("1111111111111"+pageParam);
+    const moveToList = (pageParam?: PageParam) => {
         
         let queryStr = ''
 
@@ -38,13 +30,21 @@ function useCustomMove(): UseCustomMoveReturn  {
                 page: String(pageNum),
                 size: String(sizeNum)               
             }).toString();
+
         }else{
             queryStr = queryDefault;
         }
         navigate({pathname:'../list', search:queryStr})
     };
 
-    return {page,size,moveToList}
-}
+    const moveToModify = (tno:number) => {
+        navigate({pathname:`../modify/${tno}`, search:queryDefault})
+    }
+    
+    const moveToRead = (tno:number) => {
+        navigate({pathname:`../read/${tno}`, search:queryDefault})
+    }
 
+    return {page,size,moveToList,moveToModify,moveToRead}
+}
 export default useCustomMove;

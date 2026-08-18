@@ -1,11 +1,14 @@
 import { createSearchParams , useNavigate , useSearchParams } from "react-router";
 import type { PageParam, UseCustomMoveReturn } from "../global";
 
+
 function useCustomMove(): UseCustomMoveReturn  {
 
     const navigate = useNavigate();
 
     const [queryParams] = useSearchParams();
+
+
 
     const pageStr : string | null = queryParams.get('page');
     const sizeStr : string | null =  queryParams.get('size');

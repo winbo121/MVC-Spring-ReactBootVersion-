@@ -82,4 +82,17 @@ public class TodoServiceImpl implements TodoService{
         return responseDTO;
     }
 
+    @Override
+    public void update(TodoDTO todoDTO) {
+        //DTO로 받아온것을 Entity로 전환 즉 Entity(DB직속)에 집어넣기
+        Todo todo = modelMapper.map(todoDTO, Todo.class);
+
+        todoRepository.save(todo);
+    }
+
+    @Override
+    public void delete(Long tno) {
+        todoRepository.deleteById(tno);
+    }
+
 }

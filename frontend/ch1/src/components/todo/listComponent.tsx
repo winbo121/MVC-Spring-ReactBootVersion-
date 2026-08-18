@@ -25,6 +25,7 @@ function ListComponent(){
 
     const [listData, setListData] = useState<PageResponseDTO<Todo>>(initState)
     
+    //들어오자마자 시작
     useEffect(() => {
 
         getList({page,size}).then(data =>{

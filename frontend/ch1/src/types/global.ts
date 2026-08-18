@@ -33,3 +33,9 @@ export interface PageComponentProps<T>{
     listData : PageResponseDTO<T>
     movePage : ({page} : PageParam) => void
 }
+
+export interface ResultModal{
+    title:string
+    content:string
+    callbackFn? : () => void
+}

@@ -29,7 +29,7 @@ public class TodoController {
     }
 
     @PostMapping("/regist")
-    public Map<String,String> regist (@RequestBody TodoDTO todoDTO){
+    public Map<String,String> register (@RequestBody TodoDTO todoDTO){
 
         /*
          -- localhost:8080/api/todo/regist  포스트로 JSON 형식으로 요청

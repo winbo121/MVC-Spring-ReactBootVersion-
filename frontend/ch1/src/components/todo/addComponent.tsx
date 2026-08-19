@@ -11,7 +11,8 @@ import ResultModalComponent from "../common/resultModalComponent";
 const initState:TodoAdd = {
     title:'',
     writer:'',
-    dueDate:''
+    dueDate:'',
+    complete : false
 }
 
 
@@ -23,7 +24,7 @@ function AddComponent(){
 
     const {moveToList}:UseCustomMoveReturn = useCustomMove()
 
-    //입력할시 이벤트 (계속 바뀜)
+    //입력할시 이벤트 (처음에는 빈값이었다가 계속 바뀜)
     const handleChangeTodo = (e: ChangeEvent<HTMLInputElement>) => {
         
         const { name, value } = e.target;           // ① 어떤 input인지, 뭐가 입력됐는지

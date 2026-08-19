@@ -58,7 +58,7 @@ public class TodoServiceImpl implements TodoService{
     @Override
     public PageResponseDTO<TodoDTO> list(PageRequestDTO pageRequestDTO) {
 
-        Pageable pageable = PageRequest.of(pageRequestDTO.getPage(),pageRequestDTO.getSize(), Sort.by("tno").descending());
+        Pageable pageable = PageRequest.of(pageRequestDTO.getPage()-1,pageRequestDTO.getSize(), Sort.by("tno").descending());
 
         // 리스트들을 엔터티로 받기
         Page<Todo> result = todoRepository.findAll(pageable);

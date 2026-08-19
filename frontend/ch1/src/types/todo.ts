@@ -10,6 +10,7 @@ export interface TodoAdd{
     title :string
     writer: string
     dueDate: string 
+    complete : boolean
 }
 
 export interface TodoModify{

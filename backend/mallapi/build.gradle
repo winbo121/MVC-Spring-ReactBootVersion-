@@ -41,6 +41,7 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api" //jpaQueryFactory 이용
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"  //jpaQueryFactory 이용
 	implementation 'org.modelmapper:modelmapper:3.1.1' // dto에서 entity로 변환가능한 라이브러리 또는 entity에서 dto로 변환가능 (RootConfig에서 ModelMapper사용)
+	implementation 'net.coobird:thumbnailator:0.4.19' //파일 업로드 사진을 썸네일이라고 고정 크기 맞추는 작업이다.
 }
 
 tasks.named('test') {

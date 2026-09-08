@@ -5,6 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
@@ -60,7 +64,11 @@ public class CustomFileUtil {
 
             //이미지일 경우 썸네일 지정 즉 이미지 크기 고정
             if(contentType != null && contentType.startsWith("image") ){
-                Path imagePath = Paths.get(uploadPath,"fix_"+saveName);
+
+                //이미지 일때는 썸내일로 뱉어야하기때문에 이렇게 조정
+                saveName="fix_"+saveName;
+
+                Path imagePath = Paths.get(uploadPath,saveName);
 
                 //새로 고쳐진 이미지 업로드 추가
                 Thumbnails.of(savePath.toFile())
@@ -73,5 +81,35 @@ public class CustomFileUtil {
         }
 
         return uploadNames;
+    }
+
+    public ResponseEntity<Resource> getFile(String fileName) throws IOException {
+
+        Resource resource = new FileSystemResource(uploadPath+File.separator+fileName);
+
+        if(!resource.isReadable()){
+            resource = new FileSystemResource(uploadPath+File.separator+"default.jpg");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Content-Type",Files.probeContentType(resource.getFile().toPath()));
+
+        return ResponseEntity.ok().headers(headers).body(resource);
+    }
+
+    public void deleteFiles(List<String> fileNames) {
+
+        if(!(fileNames.size()==0)){
+
+            fileNames.forEach(fileName -> {
+                Path filePath = Paths.get(uploadPath,fileName);
+                try {
+                    Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 }

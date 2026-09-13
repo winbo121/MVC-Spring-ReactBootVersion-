@@ -1,5 +1,6 @@
 import {lazy, Suspense} from "react";
 import { Navigate } from "react-router";
+import { loadProducts } from "../pages/products/listPage";
 
 const Loading = () =>  <div>Products Loading....</div>
 const ProductsIndex = lazy(() => import("../pages/products/indexPage"))
@@ -14,11 +15,13 @@ export default function productsRouter(){
             children : [
                 {
                     path: "", //products/ 로 그냥 했을때 리스트를 바로 뜰수 있도록 하기
-                    element: <Navigate to={'/products/list'}></Navigate>
+                    element: <Navigate to={'/products/list'}></Navigate>,
+                    loader:loadProducts
                 },
                 {
                     path:"list",
                     element : <Suspense fallback={<Loading/>}><ProductsList/></Suspense>,
+                    loader:loadProducts
                 },
                 {
                     path:"add",

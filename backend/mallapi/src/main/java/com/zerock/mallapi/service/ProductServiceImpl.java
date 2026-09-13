@@ -31,7 +31,7 @@ public class ProductServiceImpl implements  ProductService{
         Product product = Product.builder()
                 .pno(productDTO.getPno())
                 .pname(productDTO.getPname())
-                .pdcsc(productDTO.getPdcsc())
+                .pdcsc(productDTO.getPdesc())
                 .price(productDTO.getPrice())
                 .build();
 
@@ -54,7 +54,7 @@ public class ProductServiceImpl implements  ProductService{
         ProductDTO productDTO = ProductDTO.builder()
                 .pno(product.getPno())
                 .pname(product.getPname())
-                .pdcsc(product.getPdcsc())
+                .pdesc(product.getPdcsc())
                 .price(product.getPrice())
                 .delFlag(product.isDelFlag())
                 .build();
@@ -90,7 +90,7 @@ public class ProductServiceImpl implements  ProductService{
             productDTO = ProductDTO.builder()
                     .pno(product.getPno())
                     .pname(product.getPname())
-                    .pdcsc(product.getPdcsc())
+                    .pdesc(product.getPdcsc())
                     .price(product.getPrice())
                     .build();
 
@@ -142,7 +142,7 @@ public class ProductServiceImpl implements  ProductService{
 
         product.setPrice(productDTO.getPrice());
         product.setPname(productDTO.getPname());
-        product.setPdcsc(productDTO.getPdcsc());
+        product.setPdcsc(productDTO.getPdesc());
         product.setDelFlag(productDTO.isDelFlag());
 
         //이미지처리

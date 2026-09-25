@@ -96,10 +96,9 @@ public class ProductServiceImpl implements  ProductService{
 
             ProductImage productImage = (ProductImage) arr[1];
 
-
-
-            String imageStr = productImage.getFileName();
-            productDTO.setUploadFileNames(List.of(imageStr));
+            if (productImage != null) {
+                productDTO.setUploadFileNames(List.of(productImage.getFileName()));
+            }
 
             return  productDTO;
         }).collect(Collectors.toList());
@@ -145,16 +144,12 @@ public class ProductServiceImpl implements  ProductService{
         product.setPdcsc(productDTO.getPdesc());
         product.setDelFlag(productDTO.isDelFlag());
 
-        //이미지처리
+        // 이미지 목록은 부분 수정이 아니라 최종 목록으로 통째로 교체
+        product.clearImageList();
+
         List<String> uploadFileNames = productDTO.getUploadFileNames();
-
-        if(!uploadFileNames.isEmpty()){
-            product.clearImageList();
-
-            uploadFileNames.forEach(uploadName ->{
-                product.addImageString(uploadName);
-            });
-
+        if (uploadFileNames != null && !uploadFileNames.isEmpty()) {
+            uploadFileNames.forEach(product::addImageString);
         }
 
         productRepository.save(product);

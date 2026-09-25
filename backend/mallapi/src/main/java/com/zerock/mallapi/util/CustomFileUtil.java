@@ -11,6 +11,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,6 +48,8 @@ public class CustomFileUtil {
 
     }
 
+
+
     public List<String> saveFiles(List<MultipartFile> files) throws RuntimeException, IOException {
 
         if(files == null || files.size() ==0){
@@ -51,6 +59,10 @@ public class CustomFileUtil {
         List<String> uploadNames = new ArrayList<>();
 
         for(MultipartFile file: files){
+
+            if(file == null || file.isEmpty()){
+                continue;
+            }
 
             String saveName = UUID.randomUUID().toString()+"_"+file.getOriginalFilename();
 
@@ -91,25 +103,32 @@ public class CustomFileUtil {
             resource = new FileSystemResource(uploadPath+File.separator+"default.jpg");
         }
 
-        HttpHeaders headers = new HttpHeaders();
+        if(!resource.isReadable()){
+            return ResponseEntity.notFound().build();
+        }
 
-        headers.add("Content-Type",Files.probeContentType(resource.getFile().toPath()));
+        HttpHeaders headers = new HttpHeaders();
+        String contentType = Files.probeContentType(resource.getFile().toPath());
+        if(contentType != null){
+            headers.add("Content-Type", contentType);
+        }
 
         return ResponseEntity.ok().headers(headers).body(resource);
     }
 
     public void deleteFiles(List<String> fileNames) {
 
-        if(!(fileNames.size()==0)){
-
-            fileNames.forEach(fileName -> {
-                Path filePath = Paths.get(uploadPath,fileName);
-                try {
-                    Files.deleteIfExists(filePath);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+        if(fileNames == null || fileNames.size()==0){
+            return;
         }
+
+        fileNames.forEach(fileName -> {
+            Path filePath = Paths.get(uploadPath,fileName);
+            try {
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

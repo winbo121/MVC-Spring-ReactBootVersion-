@@ -1,9 +1,10 @@
 import useCustomMove from "../../types/hooks/useCustomMove";
 import type { PageResponseDTO, UseCustomMoveReturn } from "../../types/global";
 import type { ProductDTO } from "../../types/product";
+import PageComponent from "../common/pageComponent";
 
 const ListComponent = ({ serverData }: { serverData: PageResponseDTO<ProductDTO> }) => {
-    const { moveToRead }: UseCustomMoveReturn = useCustomMove();
+    const { moveToRead ,moveToList}: UseCustomMoveReturn = useCustomMove();
 
     return (
         <div className="border-2 border-blue-100 mt-10 mr-2 ml-2 text-2xl">
@@ -20,11 +21,13 @@ const ListComponent = ({ serverData }: { serverData: PageResponseDTO<ProductDTO>
                             </div>
                             <div className="text-1xl m-1 p-2 w-full flex flex-col">
                                 <div className="w-full overflow-hidden">
-                                    <img
-                                        alt="product"
-                                        className="m-auto rounded-md w-60"
-                                        src={`http://localhost:8080/api/products/view/${product.uploadFileNames[0]}`}
-                                    />
+                                    {product.uploadFileNames?.[0] && (
+                                        <img
+                                            alt="product"
+                                            className="m-auto rounded-md w-60"
+                                            src={`http://localhost:8080/api/products/view/${product.uploadFileNames[0]}`}
+                                        />
+                                    )}
                                 </div>
                                 <div className="bottom-0 font-extrabold bg-white">
                                     <div className="text-center p-1">
@@ -39,6 +42,7 @@ const ListComponent = ({ serverData }: { serverData: PageResponseDTO<ProductDTO>
                     </div>
                 ))}
             </div>
+             <PageComponent listData={serverData} movePage={moveToList}></PageComponent>
         </div>
     );
 };

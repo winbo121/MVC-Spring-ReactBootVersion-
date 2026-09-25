@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,25 +57,56 @@ public class ProductController {
         return customFileUtil.getFile(fileName);
     }
 
+    // 상품 수정
+    // 프론트에서 넘어오는 것:
+    //  - uploadFileNames: 화면에서 DELETE 안 하고 남긴 기존 파일 이름
+    //  - files: 새로 업로드할 파일
     @PutMapping("/{pno}")
     public Map<String,String> modify(@PathVariable("pno") Long pno, ProductDTO productDTO) throws IOException {
 
-        //삭제할 저장되어있는 파일 이름들을 가져오기위한 작업
+        // 수정 전 원본 (나중에 화면에서 뺀 파일만 디스크에서 지우기 위해)
         ProductDTO oldProductDTO = productService.getOne(pno);
 
-        //실제 파일삭제
-        customFileUtil.deleteFiles(oldProductDTO.getUploadFileNames());
-
-        //파라미터로 날라온 실제 파일들 가져오기
+        // 새로 올린 파일을 저장
         List<MultipartFile> files = productDTO.getFiles();
 
-        //파라미터로 날라온 실제 파일들 저장하기
-        List<String> uploadFileNames = customFileUtil.saveFiles(files);
 
-        // 최종 이름들을 이제 이거로 DB에 넘기기
-        productDTO.setUploadFileNames(uploadFileNames);
+        if (files != null) {
+            files.forEach(file ->
+                    log.info("getFiles() originalFilename = {}, empty = {}",
+                            file.getOriginalFilename(), file.isEmpty())
+            );
+        }
 
+        List<String> currentUploadFileNames = customFileUtil.saveFiles(files);
+
+        // 화면에서 유지한 기존 파일 이름
+        List<String> uploadedFileNames = productDTO.getUploadFileNames();
+
+        log.info("getUploadFileNames() = {}", uploadedFileNames);
+
+        if (uploadedFileNames == null) {
+            uploadedFileNames = new ArrayList<>();
+            productDTO.setUploadFileNames(uploadedFileNames);
+        }
+
+        // 최종 파일 목록 = 남긴 기존 파일 + 새로 저장한 파일
+        if (currentUploadFileNames != null && !currentUploadFileNames.isEmpty()) {
+            uploadedFileNames.addAll(currentUploadFileNames);
+        }
+
+        // DB의 상품 정보/이미지 목록을 최종 파일 목록으로 교체
         productService.modify(productDTO);
+
+        // 원래 있던 파일 중 최종 목록에 없는 것만 실제 파일 삭제
+        List<String> oldFileNames = oldProductDTO.getUploadFileNames();
+        if (oldFileNames != null && !oldFileNames.isEmpty()) {
+            List<String> finalUploadedFileNames = uploadedFileNames;
+            List<String> removeFiles = oldFileNames.stream()
+                    .filter(fileName -> finalUploadedFileNames.indexOf(fileName) == -1)
+                    .toList();
+            customFileUtil.deleteFiles(removeFiles);
+        }
 
         return Map.of("Result","Success");
     }

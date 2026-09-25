@@ -16,7 +16,7 @@ export async function loadProducts({ request }: LoaderFunctionArgs) {
 }
 
 const ListPage = () => {
-    const serverData = useLoaderData() as PageResponseDTO<ProductDTO>;
+    const serverData :PageResponseDTO<ProductDTO> = useLoaderData();
 
     return (
         <div className="w-full mt-4 border border-solid border-neutral-300 shadow-md">
